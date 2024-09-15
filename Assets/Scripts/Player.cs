@@ -8,12 +8,16 @@ public class NewBehaviourScript : MonoBehaviour
     private float _speed = 3.5f;
     [SerializeField]
     private GameObject _laserPrefab;
+    [SerializeField]
+    private float _fireRate = 0.15f;
+    [SerializeField]
+    private float _canFire = -1.0f;
+
 
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
-
     }
 
     // Update is called once per frame
@@ -21,9 +25,9 @@ public class NewBehaviourScript : MonoBehaviour
     {
         CalculateMovement();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
-            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            FireLaser();
         }
     }
 
@@ -33,7 +37,7 @@ public class NewBehaviourScript : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         // transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
         // transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
-        
+
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         transform.Translate(direction * _speed * Time.deltaTime);
 
@@ -56,5 +60,11 @@ public class NewBehaviourScript : MonoBehaviour
         {
             transform.position = new Vector3(11.3f, transform.position.y, 0);
         }
+    }
+
+    void FireLaser()
+    {
+        _canFire = Time.time + _fireRate;
+        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
     }
 }
